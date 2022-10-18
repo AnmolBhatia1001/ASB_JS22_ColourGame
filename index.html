@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Prediction Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white flex justify-center">
+    <div class="container mt-12 flex flex-col justify-start items-center gap-8 ">
+        <h1 class="text-center text-5xl" >Color Prediction Game</h1>
+
+        <div class="flex justify-center items-center text-3xl font-semibold rounded-xl border-2  w-[400px] h-[100px]">
+            <div class="border-2 rounded-xl p-2 m-2" >R : <span class="rgb">255</span>  </div>
+            <div class="border-2 rounded-xl p-2 m-2" >G : <span class="rgb">255</span>  </div>
+            <div class="border-2 rounded-xl p-2 m-2" >B : <span class="rgb">255</span>  </div>
+        </div>
+        <h2 class="text-center text-2xl">
+            Predict the colour resulting from the above combination
+        </h2>
+
+        <div class="options flex justify-center items-center text-3xl gap-20 w-full h-[125px]">
+            <div class="combis bg-blue-500 rounded-xl h-full w-[150px] flex justify-center items-center cursor-pointer">01</div>
+            <div class="combis bg-orange-500 rounded-xl h-full w-[150px] flex justify-center items-center cursor-pointer">02</div>
+            <div class="combis bg-gray-500 rounded-xl h-full w-[150px] flex justify-center items-center cursor-pointer">03</div>
+        </div>
+
+        <div id="outputBox" class="text-center text-2xl ">
+            _
+        </div>
+
+        <button id="playAgainBtn" onClick="window.location.reload()" class="text-center text-2xl border-2 p-3 rounded-xl hidden ">
+            Play Again
+        </button>
+
+    </div>
+    
+    <script>
+        const rgb = document.querySelectorAll(".rgb"); // actuall rgb array
+        const combis = document.querySelectorAll(".combis"); // options array
+        const outputBox = document.getElementById("outputBox");
+        const playAgainBtn = document.getElementById("playAgainBtn");
+
+        function genrator(){
+            return Math.floor(Math.random()*255)
+        }
+
+        let actualRGB = []
+        let combisArray = []
+
+        function geratingRGB(){
+            rgb.forEach((c)=>{
+                let randomRGB = genrator()
+                c.innerHTML = randomRGB
+                actualRGB.push(randomRGB)
+            })
+        }
+        geratingRGB()
+        combisArray.push(actualRGB)
+
+        function combiOptions(){
+            let genratedOp = []
+            for(let i=0; i<3 ; i++){
+                let randomRGB = genrator();
+                genratedOp.push(randomRGB)
+            }
+            return genratedOp
+        }
+        combisArray.push(combiOptions())
+        combisArray.push(combiOptions())
+
+        let shuffledCombi = combisArray
+        .map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value)
+
+        function assignCombi(){
+            for (let i = 0; i < shuffledCombi.length; i++) {
+                combis[i].style.backgroundColor = `rgb(${shuffledCombi[i][0]}, ${shuffledCombi[i][1]}, ${shuffledCombi[i][2]})`
+            }
+        }
+        assignCombi()
+        
+        let computedActualRGB = `rgb(${actualRGB[0]}, ${actualRGB[1]}, ${actualRGB[2]})`;
+        combis.forEach((ele) => {
+            ele.addEventListener("click", ()=>{
+                if(ele.style.backgroundColor == computedActualRGB){
+                    outputBox.innerHTML = `Correct !!!`
+                    playAgainBtn.style.display ="block"
+                }else{
+                    outputBox.innerHTML = `Try Again`
+                    ele.style.display = "none"
+                }
+            })
+        })
+    </script>
+</body>
+</html>
